@@ -9,9 +9,9 @@
           C5,2.8,5.1,1.2,5.6,0.4C6-0.1,7-0.1,7.4,0.4c0.5,0.8,0.7,2.4,1.8,3.5c1.2,1.2,2.6,1.2,3.5,1.7c0.6,0.4,0.6,1.4,0,1.7
           C11.8,7.9,10.2,8,9.1,9.1c-1,1-1.2,2.7-1.7,3.5C7,13.1,6,13.1,5.6,12.6z"/>
       </svg>
-      <span>Portfolio</span>
+      <span>{{ __('Portfolio') }}</span>
     </p>
-    <h2 class="h2__title animate-in-up">Check out my featured projects</h2>
+    <h2 class="h2__title animate-in-up">{{ __('Check out my featured projects') }}</h2>
   </div>
   <!-- Content Block - H2 Section Title End -->
 
@@ -45,16 +45,16 @@
   @endphp
   <div class="content__block portfolio-filter animate-in-up">
     <div class="card__tags d-flex flex-wrap" data-filter-group="type">
-      <span class="small filter-label">Loại dự án</span>
-      <button type="button" class="rounded-tag tag-outline filter-btn is-active" data-filter="all">All</button>
+      <span class="small filter-label">{{ __('Project type') }}</span>
+      <button type="button" class="rounded-tag tag-outline filter-btn is-active" data-filter="all">{{ __('All') }}</button>
       @foreach (\App\Models\Project::TYPE_LABELS as $typeKey => $typeLabel)
         @continue(! $presentTypes->contains($typeKey))
-        <button type="button" class="rounded-tag tag-outline filter-btn" data-filter="{{ $typeKey }}">{{ $typeLabel }}</button>
+        <button type="button" class="rounded-tag tag-outline filter-btn" data-filter="{{ $typeKey }}">{{ __($typeLabel) }}</button>
       @endforeach
     </div>
     <div class="card__tags d-flex flex-wrap" data-filter-group="tag">
-      <span class="small filter-label">Hạng mục</span>
-      <button type="button" class="rounded-tag tag-outline filter-btn is-active" data-filter="all">All</button>
+      <span class="small filter-label">{{ __('Category') }}</span>
+      <button type="button" class="rounded-tag tag-outline filter-btn is-active" data-filter="all">{{ __('All') }}</button>
       @foreach ($presentCategories as $categoryTag)
         <button type="button" class="rounded-tag tag-outline filter-btn" data-filter="{{ $categoryTag->name }}">{{ $categoryTag->name }}</button>
       @endforeach
@@ -71,18 +71,18 @@
         <!-- Works Gallery Single Item Start -->
         <figure class="col-12 col-md-6 gallery__item grid-item animate-card-2" data-type="{{ $project->type }}" data-tags="{{ json_encode($project->tags->pluck('name')) }}" data-album="{{ json_encode($project->album_items) }}" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
           <a href="{{ $project->image_url }}" data-image="{{ $project->image_url }}" class="gallery__link" itemprop="contentUrl" data-size="{{ $project->size }}">
-            <img src="{{ $project->image_url }}" class="gallery__image" itemprop="thumbnail" alt="{{ $project->title }}" loading="lazy">
+            <img src="{{ $project->image_url }}" class="gallery__image" itemprop="thumbnail" alt="{{ $project->tr('title') }}" loading="lazy">
           </a>
           <figcaption class="gallery__descr{{ $project->opposite ? ' opposite' : '' }}" itemprop="caption description">
-            <h5 @if ($project->opposite) class="opposite" @endif>{{ $project->title }}</h5>
+            <h5 @if ($project->opposite) class="opposite" @endif>{{ $project->tr('title') }}</h5>
             <div class="card__tags d-flex flex-wrap">
               @foreach ($project->tags as $tag)
               <span class="rounded-tag{{ $project->opposite ? '' : ' opposite' }}">{{ $tag->name }}</span>
               @endforeach
             </div>
-            <p class="small">{{ $project->description }}<br><br>
+            <p class="small">{{ $project->tr('description') }}<br><br>
               @if ($project->link)
-              <a class="btn btn-default btn-fullwidth btn-hover btn-hover-accent" href="{{ $project->link }}" target="_blank"><span class="btn-caption">Detail</span>
+              <a class="btn btn-default btn-fullwidth btn-hover btn-hover-accent" href="{{ $project->link }}" target="_blank"><span class="btn-caption">{{ __('Detail') }}</span>
               </a>
               @endif
             </p>

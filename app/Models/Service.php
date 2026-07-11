@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasViTranslation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Service extends Model
 {
+    use HasViTranslation;
+
     protected $guarded = [];
 
     public function tags(): BelongsToMany

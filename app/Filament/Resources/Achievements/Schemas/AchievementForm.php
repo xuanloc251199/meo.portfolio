@@ -14,7 +14,11 @@ class AchievementForm
                 TextInput::make('number')
                     ->required(),
                 TextInput::make('label')
+                    ->label('Nhãn (EN)')
                     ->required(),
+                TextInput::make('label_vi')
+                    ->label('Nhãn (VI)')
+                    ->helperText('Bỏ trống sẽ dùng bản tiếng Anh.'),
                 TextInput::make('sort_order')
                     ->required()
                     ->numeric()

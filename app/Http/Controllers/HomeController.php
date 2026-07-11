@@ -20,7 +20,11 @@ class HomeController extends Controller
             'education' => ResumeEntry::where('type', ResumeEntry::TYPE_EDUCATION)->orderBy('sort_order')->get(),
             'experience' => ResumeEntry::where('type', ResumeEntry::TYPE_EXPERIENCE)->orderBy('sort_order')->get(),
             'achievements' => Achievement::orderBy('sort_order')->get(),
-            'settings' => Setting::pluck('value', 'key'),
+            'settings' => Setting::all()->mapWithKeys(fn (Setting $setting) => [
+                $setting->key => app()->getLocale() === 'vi' && filled($setting->value_vi)
+                    ? $setting->value_vi
+                    : $setting->value,
+            ]),
         ]);
     }
 }

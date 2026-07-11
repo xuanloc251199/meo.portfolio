@@ -15,6 +15,11 @@ class SettingForm
                 TextInput::make('key')
                     ->required(),
                 Textarea::make('value')
+                    ->label('Giá trị (EN)')
+                    ->columnSpanFull(),
+                Textarea::make('value_vi')
+                    ->label('Giá trị (VI)')
+                    ->helperText('Bỏ trống sẽ dùng bản tiếng Anh.')
                     ->columnSpanFull(),
                 TextInput::make('label'),
             ]);

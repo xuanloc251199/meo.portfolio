@@ -9,9 +9,9 @@
           C5,2.8,5.1,1.2,5.6,0.4C6-0.1,7-0.1,7.4,0.4c0.5,0.8,0.7,2.4,1.8,3.5c1.2,1.2,2.6,1.2,3.5,1.7c0.6,0.4,0.6,1.4,0,1.7
           C11.8,7.9,10.2,8,9.1,9.1c-1,1-1.2,2.7-1.7,3.5C7,13.1,6,13.1,5.6,12.6z"/>
       </svg>
-      <span>Contact</span>
+      <span>{{ __('Contact') }}</span>
     </p>
-    <h2 class="h2__title  animate-in-up">Let's make something awesome together!</h2>
+    <h2 class="h2__title  animate-in-up">{{ __("Let's make something awesome together!") }}</h2>
   </div>
   <!-- Content Block - H2 Section Title End -->
 
@@ -22,8 +22,8 @@
       <!-- Reply Messages Start -->
       <div class="form__reply centered text-center">
         <i class="ph-bold ph-smiley reply__icon"></i>
-        <p class="reply__title">Done!</p>
-        <span class="reply__text">Thanks for your message. I'll get back as soon as possible.</span>
+        <p class="reply__title">{{ __('Done!') }}</p>
+        <span class="reply__text">{{ __("Thanks for your message. I'll get back as soon as possible.") }}</span>
       </div>
       <!-- Reply Messages End -->
 
@@ -33,23 +33,23 @@
         <div class="container-fluid p-0">
           <div class="row gx-0">
             <div class="col-12 col-md-6 form__item animate-in-up">
-              <input type="text" name="name" placeholder="Your Name*" required>
+              <input type="text" name="name" placeholder="{{ __('Your Name*') }}" required>
             </div>
             <div class="col-12 col-md-6 form__item animate-in-up">
-              <input type="text" name="company" placeholder="Company Name">
+              <input type="text" name="company" placeholder="{{ __('Company Name') }}">
             </div>
             <div class="col-12 col-md-6 form__item animate-in-up">
-              <input type="email" name="email" placeholder="Email Adress*" required>
+              <input type="email" name="email" placeholder="{{ __('Email Adress*') }}" required>
             </div>
             <div class="col-12 col-md-6 form__item animate-in-up">
-              <input type="tel" name="phone" placeholder="Phone Number*" required>
+              <input type="tel" name="phone" placeholder="{{ __('Phone Number*') }}" required>
             </div>
             <div class="col-12 form__item animate-in-up">
-              <textarea name="message" placeholder="A Few Words*" required></textarea>
+              <textarea name="message" placeholder="{{ __('A Few Words*') }}" required></textarea>
             </div>
             <div class="col-12 form__item animate-in-up">
               <button class="btn btn-default btn-hover btn-hover-accent" type="submit">
-                <span class="btn-caption">Send Message</span>
+                <span class="btn-caption">{{ __('Send Message') }}</span>
                 <i class="ph-bold ph-paper-plane-tilt"></i>
               </button>
             </div>
@@ -86,11 +86,9 @@
   <!-- Content Block - Teaser Start -->
   <div class="content__block">
     <div class="teaser">
-      <p class="teaser__text animate-in-up">Want to know more about me, tell me
-        about your project or just to say hello?
-        <a class="text-link-bold" href="mailto:{{ $settings['email'] ?? '' }}?subject=Message%20from%20your%20site">Drop me a line</a>
-        and I'll get back
-        as soon as possible.
+      <p class="teaser__text animate-in-up">{{ __('Want to know more about me, tell me about your project or just to say hello?') }}
+        <a class="text-link-bold" href="mailto:{{ $settings['email'] ?? '' }}?subject=Message%20from%20your%20site">{{ __('Drop me a line') }}</a>
+        {{ __("and I'll get back as soon as possible.") }}
       </p>
     </div>
   </div>
@@ -102,21 +100,21 @@
       <div class="row g-0 contact-lines__item">
         <!-- data item -->
         <div class="col-12 col-md-4 contact-lines__data">
-          <p class="contact-lines__title animate-in-up">Location</p>
+          <p class="contact-lines__title animate-in-up">{{ __('Location') }}</p>
           <p class="contact-lines__text animate-in-up">
             <a class="text-link-bold" href="{{ $settings['location_map_url'] ?? '#' }}" target="_blank">{{ $settings['location_text'] ?? '' }}</a>
           </p>
         </div>
         <!-- data item -->
         <div class="col-12 col-md-4 contact-lines__data">
-          <p class="contact-lines__title animate-in-up">Phone</p>
+          <p class="contact-lines__title animate-in-up">{{ __('Phone') }}</p>
           <p class="contact-lines__text animate-in-up">
             <a class="text-link-bold" href="tel:{{ $settings['phone_tel'] ?? '' }}">{{ $settings['phone'] ?? '' }}</a>
           </p>
         </div>
         <!-- data item -->
         <div class="col-12 col-md-4 contact-lines__data">
-          <p class="contact-lines__title animate-in-up">Email</p>
+          <p class="contact-lines__title animate-in-up">{{ __('Email') }}</p>
           <p class="contact-lines__text animate-in-up">
             <a class="text-link-bold" href="mailto:{{ $settings['email'] ?? '' }}?subject=Message%20from%20your%20site">{{ $settings['email'] ?? '' }}</a>
           </p>

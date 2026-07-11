@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\HasViTranslation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Project extends Model
 {
+    use HasViTranslation;
+
     public const TYPE_LABELS = [
         'design' => 'Design',
         'photography' => 'Photography',

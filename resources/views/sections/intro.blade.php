@@ -14,11 +14,11 @@
     <h1 class="headline__title animate-headline">{!! $settings['headline_title'] ?? '' !!}</h1>
     <div class="headline__btnholder d-flex flex-column flex-sm-row">
       <a class="btn mobile-vertical btn-default btn-hover btn-hover-accent-mobile animate-headline" href="#portfolio">
-        <span class="btn-caption">My Works</span>
+        <span class="btn-caption">{{ __('My Works') }}</span>
         <i class="ph-bold ph-squares-four"></i>
       </a>
       <a target="_blank" class="btn mobile-vertical btn-default btn-hover btn-hover-outline-mobile animate-headline" href="{{ $settings['cv_url'] ?? '#' }}">
-        <span class="btn-caption">Download CV</span>
+        <span class="btn-caption">{{ __('Download CV') }}</span>
         <i class="ph-bold ph-download-simple"></i>
       </a>
     </div>
@@ -39,7 +39,7 @@
           <use xlink:href="#textPath" fill="none"></use>
           <text>
             <!-- button text here!!! -->
-            <textPath xlink:href="#textPath">Scroll for More * Scroll for More * </textPath>
+            <textPath xlink:href="#textPath">{{ __('Scroll for More * Scroll for More * ') }}</textPath>
           </text>
         </g>
       </svg>

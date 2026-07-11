@@ -42,14 +42,14 @@
     <!-- data caption #1 -->
     <div class="avatar__block">
       <h6>
-        <small class="top">Specialization:</small>
+        <small class="top">{{ __('Specialization:') }}</small>
         {!! $settings['specialization'] ?? '' !!}
       </h6>
     </div>
     <!-- data caption #2 -->
     <div class="avatar__block">
       <h6>
-        <small class="top">Based in:</small>
+        <small class="top">{{ __('Based in:') }}</small>
         {!! $settings['based_in'] ?? '' !!}
       </h6>
     </div>
@@ -67,7 +67,7 @@
       </div>
       <div class="avatar__btnholder">
         <a class="btn btn-default btn-fullwidth btn-hover btn-hover-accent" href="#contact" target="_blank">
-          <span class="btn-caption">Let's Work Together!</span>
+          <span class="btn-caption">{{ __("Let's Work Together!") }}</span>
         </a>
       </div>
     </div>

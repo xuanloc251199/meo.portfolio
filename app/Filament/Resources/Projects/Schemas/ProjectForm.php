@@ -16,7 +16,11 @@ class ProjectForm
         return $schema
             ->components([
                 TextInput::make('title')
+                    ->label('Tiêu đề (EN)')
                     ->required(),
+                TextInput::make('title_vi')
+                    ->label('Tiêu đề (VI)')
+                    ->helperText('Bỏ trống sẽ dùng bản tiếng Anh.'),
                 Select::make('type')
                     ->label('Loại dự án')
                     ->options(\App\Models\Project::TYPE_LABELS)
@@ -49,6 +53,11 @@ class ProjectForm
                     ->searchable()
                     ->columnSpanFull(),
                 Textarea::make('description')
+                    ->label('Mô tả (EN)')
+                    ->columnSpanFull(),
+                Textarea::make('description_vi')
+                    ->label('Mô tả (VI)')
+                    ->helperText('Bỏ trống sẽ dùng bản tiếng Anh.')
                     ->columnSpanFull(),
                 TextInput::make('link'),
                 Toggle::make('opposite')

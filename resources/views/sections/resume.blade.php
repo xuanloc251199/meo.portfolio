@@ -9,9 +9,9 @@
           C5,2.8,5.1,1.2,5.6,0.4C6-0.1,7-0.1,7.4,0.4c0.5,0.8,0.7,2.4,1.8,3.5c1.2,1.2,2.6,1.2,3.5,1.7c0.6,0.4,0.6,1.4,0,1.7
           C11.8,7.9,10.2,8,9.1,9.1c-1,1-1.2,2.7-1.7,3.5C7,13.1,6,13.1,5.6,12.6z"/>
       </svg>
-      <span>Resume</span>
+      <span>{{ __('Resume') }}</span>
     </p>
-    <h2 class="h2__title animate-in-up">Education and practical experience</h2>
+    <h2 class="h2__title animate-in-up">{{ __('Education and practical experience') }}</h2>
   </div>
   <!-- Content Block - H2 Section Title End -->
 
@@ -20,7 +20,7 @@
 
     <!-- H3 Block Start -->
     <div class="section-h3">
-      <h3 class="h3__title animate-in-up">My education</h3>
+      <h3 class="h3__title animate-in-up">{{ __('My education') }}</h3>
     </div>
     <!-- H3 Block End -->
 
@@ -30,18 +30,18 @@
       <!-- education single item -->
       <div class="row g-0 resume-lines__item animate-in-up">
         <div class="col-12 col-md-2">
-          <span class="resume-lines__date animate-in-up">{{ $entry->period }}</span>
+          <span class="resume-lines__date animate-in-up">{{ $entry->tr('period') }}</span>
         </div>
         <div class="col-12 col-md-5">
-          <h5 class="resume-lines__title animate-in-up">{{ $entry->title }}</h5>
+          <h5 class="resume-lines__title animate-in-up">{{ $entry->tr('title') }}</h5>
           @if ($entry->source_name)
-          <p class="resume-lines__source animate-in-up">Course by
+          <p class="resume-lines__source animate-in-up">{{ __('Course by') }}
             <a href="{{ $entry->source_url ?? '#0' }}" class="text-link-bold" target="_blank">{{ $entry->source_name }}</a>
           </p>
           @endif
         </div>
         <div class="col-12 col-md-5">
-          <p class="small resume-lines__descr animate-in-up">{{ $entry->description }}</p>
+          <p class="small resume-lines__descr animate-in-up">{{ $entry->tr('description') }}</p>
         </div>
       </div>
       @endforeach
@@ -56,7 +56,7 @@
 
     <!-- H3 Block Start -->
     <div class="section-h3">
-      <h3 class="h3__title animate-in-up">Work experience</h3>
+      <h3 class="h3__title animate-in-up">{{ __('Work experience') }}</h3>
     </div>
     <!-- H3 Block End -->
 
@@ -66,18 +66,18 @@
       <!-- experience single item -->
       <div class="row g-0 resume-lines__item animate-in-up">
         <div class="col-12 col-md-2">
-          <span class="resume-lines__date animate-in-up">{{ $entry->period }}</span>
+          <span class="resume-lines__date animate-in-up">{{ $entry->tr('period') }}</span>
         </div>
         <div class="col-12 col-md-5">
-          <h5 class="resume-lines__title animate-in-up">{{ $entry->title }}</h5>
+          <h5 class="resume-lines__title animate-in-up">{{ $entry->tr('title') }}</h5>
           @if ($entry->source_name)
-          <p class="resume-lines__source animate-in-up">in the
+          <p class="resume-lines__source animate-in-up">{{ __('in the') }}
             <a href="{{ $entry->source_url ?? '#0' }}" class="text-link-bold" target="_blank">{{ $entry->source_name }}</a>
           </p>
           @endif
         </div>
         <div class="col-12 col-md-5">
-          <p class="small resume-lines__descr animate-in-up">{{ $entry->description }}</p>
+          <p class="small resume-lines__descr animate-in-up">{{ $entry->tr('description') }}</p>
         </div>
       </div>
       @endforeach
@@ -90,7 +90,7 @@
   <!-- Content Block - H3 Block Start -->
   <div class="content__block">
     <div class="section-h3 section-h3-grid">
-      <h3 class="h3__title animate-in-up">My favourite tools</h3>
+      <h3 class="h3__title animate-in-up">{{ __('My favourite tools') }}</h3>
     </div>
   </div>
   <!-- Content Block - H3 Block End -->

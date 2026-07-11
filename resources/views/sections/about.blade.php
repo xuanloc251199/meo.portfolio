@@ -9,9 +9,9 @@
           C5,2.8,5.1,1.2,5.6,0.4C6-0.1,7-0.1,7.4,0.4c0.5,0.8,0.7,2.4,1.8,3.5c1.2,1.2,2.6,1.2,3.5,1.7c0.6,0.4,0.6,1.4,0,1.7
           C11.8,7.9,10.2,8,9.1,9.1c-1,1-1.2,2.7-1.7,3.5C7,13.1,6,13.1,5.6,12.6z"/>
       </svg>
-      <span>About Me</span>
+      <span>{{ __('About Me') }}</span>
     </p>
-    <h2 class="h2__title animate-in-up">Turning complex problems into simple things</h2>
+    <h2 class="h2__title animate-in-up">{{ __('Turning complex problems into simple things') }}</h2>
   </div>
   <!-- Content Block - H2 Section Title End -->
 
@@ -23,7 +23,7 @@
       <div class="achievements__item d-flex flex-column grid-item animate-card-3">
         <div class="achievements__card">
           <p class="achievements__number">{{ $achievement->number }}</p>
-          <p class="achievements__descr">{{ $achievement->label }}</p>
+          <p class="achievements__descr">{{ $achievement->tr('label') }}</p>
         </div>
       </div>
       @endforeach
@@ -43,7 +43,7 @@
           </p>
           <div class="btn-group about-descr__btnholder animate-in-up">
             <a target="_blank" class="btn mobile-vertical btn-default btn-hover btn-hover-accent" href="{{ $settings['about_cv_url'] ?? '#' }}">
-              <span class="btn-caption">Download CV</span>
+              <span class="btn-caption">{{ __('Download CV') }}</span>
               <i class="ph-bold ph-download-simple"></i>
             </a>
           </div>
@@ -54,25 +54,25 @@
         <div class="col-12 col-xl-4 grid-item about-info">
           <div class="about-info__item animate-in-up">
             <h6>
-              <small class="top">Name</small>
+              <small class="top">{{ __('Name') }}</small>
               {{ $settings['name'] ?? '' }}
             </h6>
           </div>
           <div class="about-info__item animate-in-up">
             <h6>
-              <small class="top">Phone</small>
+              <small class="top">{{ __('Phone') }}</small>
               <a class="text-link-bold" href="tel:{{ $settings['phone_tel'] ?? '' }}">{{ $settings['phone'] ?? '' }}</a>
             </h6>
           </div>
           <div class="about-info__item animate-in-up">
             <h6>
-              <small class="top">Email</small>
+              <small class="top">{{ __('Email') }}</small>
               <a class="text-link-bold" href="mailto:{{ $settings['email'] ?? '' }}">{{ $settings['email'] ?? '' }}</a>
             </h6>
           </div>
           <div class="about-info__item animate-in-up">
             <h6>
-              <small class="top">Location</small>
+              <small class="top">{{ __('Location') }}</small>
               <a class="text-link-bold" href="{{ $settings['location_map_url'] ?? '#' }}" target="_blank">{{ $settings['location_text'] ?? '' }}</a>
             </h6>
           </div>
@@ -93,13 +93,13 @@
         <div class="col-12 col-md-6 cards__item grid-item animate-card-2">
           <div class="cards__card d-flex flex-column">
             <div class="cards__descr">
-              <h4 class="cards__title animate-in-up">{{ $service->title }}</h4>
+              <h4 class="cards__title animate-in-up">{{ $service->tr('title') }}</h4>
               <div class="cards__tags d-flex flex-wrap animate-in-up">
                 @foreach ($service->tags as $tag)
                 <span class="rounded-tag tag-outline">{{ $tag->name }}</span>
                 @endforeach
               </div>
-              <p class="small cards__text animate-in-up">{{ $service->description }}</p>
+              <p class="small cards__text animate-in-up">{{ $service->tr('description') }}</p>
             </div>
             <div class="cards__image d-flex animate-in-up">
               <img src="{{ $service->image_url }}" alt="Service/Feature Image">
