@@ -5,7 +5,7 @@
   <title>Tạo mã QR miễn phí — Xuan Loc</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="description" content="Trình tạo mã QR miễn phí: URL, WiFi, vCard, Email, SMS... Tùy chỉnh màu sắc, logo, kiểu chấm và tải về PNG/SVG.">
+  <meta name="description" content="Trình tạo mã QR miễn phí: URL, WiFi, vCard, Email, SMS... Tùy chỉnh màu sắc, logo, kiểu chấm và tải về PNG/JPG/WEBP/SVG.">
   <link rel="icon" href="{{ asset('img/favicon/favicon.ico') }}" sizes="any">
   <link rel="icon" href="{{ asset('img/favicon/icon.svg') }}" type="image/svg+xml">
   <!-- Phosphor icon font lives in plugins.css -->
@@ -27,7 +27,7 @@
       <div class="qrp__brand">
         <span class="qrp__logo"><i class="ph-bold ph-qr-code"></i></span>
         <span>Tạo mã QR
-          <small>miễn phí · tùy chỉnh · tải PNG/SVG</small>
+          <small>miễn phí · tùy chỉnh · tải PNG/JPG/WEBP/SVG</small>
         </span>
       </div>
       <button id="qrp-theme" class="qrp__theme" type="button" aria-label="Đổi giao diện sáng/tối">
@@ -206,33 +206,68 @@
                 <input type="color" id="qr-bg" value="#ffffff">
                 <span class="hex" id="qr-bg-hex">#ffffff</span>
               </div>
+              <label class="check"><input type="checkbox" id="qr-transparent"> Nền trong suốt</label>
             </div>
 
-            <div class="control">
-              <label class="field-label" for="qr-dot-style">Kiểu chấm</label>
-              <select class="select" id="qr-dot-style">
-                <option value="square">Vuông</option>
-                <option value="rounded">Bo tròn</option>
-                <option value="dots">Chấm tròn</option>
-                <option value="classy">Classy</option>
-                <option value="classy-rounded">Classy bo</option>
-                <option value="extra-rounded">Bo nhiều</option>
-              </select>
+            @php
+              // Mini SVG illustrations for each style option (one module shape, tiled 3x3 for dots).
+              $dotStyles = [
+                'square'         => ['Vuông',     '<rect width="6" height="6"/>'],
+                'rounded'        => ['Bo tròn',   '<rect width="6" height="6" rx="1.6"/>'],
+                'dots'           => ['Chấm tròn', '<circle cx="3" cy="3" r="3"/>'],
+                'classy'         => ['Classy',    '<path d="M0 3A3 3 0 0 1 3 0H6V3A3 3 0 0 1 3 6H0Z"/>'],
+                'classy-rounded' => ['Classy bo', '<path d="M0 3A3 3 0 0 1 3 0H4.4A1.6 1.6 0 0 1 6 1.6V3A3 3 0 0 1 3 6H1.6A1.6 1.6 0 0 1 0 4.4Z"/>'],
+                'extra-rounded'  => ['Bo nhiều',  '<rect width="6" height="6" rx="2.6"/>'],
+              ];
+              $cornerSquareStyles = [
+                'square'        => ['Vuông',   '<rect x="3.5" y="3.5" width="17" height="17" fill="none" stroke="currentColor" stroke-width="3.5"/>'],
+                'extra-rounded' => ['Bo tròn', '<rect x="3.5" y="3.5" width="17" height="17" rx="5.5" fill="none" stroke="currentColor" stroke-width="3.5"/>'],
+                'dot'           => ['Tròn',    '<circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="3.5"/>'],
+              ];
+              $cornerDotStyles = [
+                'square' => ['Vuông', '<rect x="6.5" y="6.5" width="11" height="11"/>'],
+                'dot'    => ['Tròn',  '<circle cx="12" cy="12" r="5.5"/>'],
+              ];
+            @endphp
+
+            <div class="control full">
+              <span class="field-label">Kiểu chấm</span>
+              <div class="swatches" id="qr-dot-style">
+                @foreach ($dotStyles as $value => [$label, $shape])
+                  <button class="swatch{{ $loop->first ? ' is-active' : '' }}" data-value="{{ $value }}" type="button" title="{{ $label }}">
+                    <svg viewBox="0 0 22 22" fill="currentColor" aria-hidden="true">
+                      @foreach ([0, 8, 16] as $y)
+                        @foreach ([0, 8, 16] as $x)
+                          <g transform="translate({{ $x }},{{ $y }})">{!! $shape !!}</g>
+                        @endforeach
+                      @endforeach
+                    </svg>
+                    <span>{{ $label }}</span>
+                  </button>
+                @endforeach
+              </div>
             </div>
             <div class="control">
-              <label class="field-label" for="qr-corner-square">Kiểu góc ngoài</label>
-              <select class="select" id="qr-corner-square">
-                <option value="square">Vuông</option>
-                <option value="extra-rounded">Bo tròn</option>
-                <option value="dot">Chấm</option>
-              </select>
+              <span class="field-label">Kiểu góc ngoài</span>
+              <div class="swatches" id="qr-corner-square">
+                @foreach ($cornerSquareStyles as $value => [$label, $shape])
+                  <button class="swatch{{ $loop->first ? ' is-active' : '' }}" data-value="{{ $value }}" type="button" title="{{ $label }}">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{!! $shape !!}</svg>
+                    <span>{{ $label }}</span>
+                  </button>
+                @endforeach
+              </div>
             </div>
             <div class="control">
-              <label class="field-label" for="qr-corner-dot">Kiểu góc trong</label>
-              <select class="select" id="qr-corner-dot">
-                <option value="square">Vuông</option>
-                <option value="dot">Chấm</option>
-              </select>
+              <span class="field-label">Kiểu góc trong</span>
+              <div class="swatches" id="qr-corner-dot">
+                @foreach ($cornerDotStyles as $value => [$label, $shape])
+                  <button class="swatch{{ $loop->first ? ' is-active' : '' }}" data-value="{{ $value }}" type="button" title="{{ $label }}">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">{!! $shape !!}</svg>
+                    <span>{{ $label }}</span>
+                  </button>
+                @endforeach
+              </div>
             </div>
             <div class="control">
               <label class="field-label" for="qr-ecc">Mức sửa lỗi</label>
@@ -245,7 +280,7 @@
             </div>
 
             <div class="control">
-              <label class="field-label" for="qr-size">Kích thước: <span class="range-val" id="qr-size-val">320px</span></label>
+              <label class="field-label" for="qr-size">Cỡ xem trước: <span class="range-val" id="qr-size-val">320px</span></label>
               <input type="range" id="qr-size" min="160" max="1000" step="20" value="320">
             </div>
             <div class="control">
@@ -299,11 +334,28 @@
               <div class="qr-cta" id="qrp-cta">SCAN ME</div>
             </div>
           </div>
+          <div class="dl-size">
+            <label class="field-label" for="qr-export-size">Kích thước tải về</label>
+            <div class="dl-size__row">
+              <select class="select" id="qr-export-size">
+                <option value="512">512 × 512 px</option>
+                <option value="1024">1024 × 1024 px</option>
+                <option value="1920" selected>1920 × 1920 px</option>
+                <option value="2048">2048 × 2048 px</option>
+                <option value="4096">4096 × 4096 px</option>
+                <option value="custom">Tùy chỉnh…</option>
+              </select>
+              <input class="input" type="number" id="qr-export-custom" min="128" max="8192" step="1" value="1920" hidden>
+            </div>
+          </div>
           <div class="downloads">
             <button class="btn btn--primary" id="qrp-dl-png" type="button"><i class="ph-bold ph-download-simple"></i> PNG</button>
+            <button class="btn" id="qrp-dl-jpg" type="button"><i class="ph-bold ph-download-simple"></i> JPG</button>
+            <button class="btn" id="qrp-dl-webp" type="button"><i class="ph-bold ph-download-simple"></i> WEBP</button>
             <button class="btn" id="qrp-dl-svg" type="button"><i class="ph-bold ph-download-simple"></i> SVG</button>
           </div>
-          <p class="hint">Mã QR được tạo hoàn toàn trên trình duyệt của bạn — không dữ liệu nào được gửi đi.</p>
+          <p class="hint">Mã QR được tạo hoàn toàn trên trình duyệt của bạn — không dữ liệu nào được gửi đi.
+            Khung CTA chỉ có ở PNG/JPG/WEBP; JPG không hỗ trợ nền trong suốt (sẽ dùng nền trắng).</p>
         </section>
       </aside>
 

@@ -177,28 +177,50 @@
     return parseInt($('qr-size').value, 10) || 320;
   }
 
-  function render() {
-    var data = buildData();
-    var size = currentSize();
-    var opts = {
+  // Style swatch groups (visual pickers replacing the old <select>s).
+  function swatchVal(id) {
+    var active = $(id).querySelector('.swatch.is-active');
+    return active ? active.getAttribute('data-value') : '';
+  }
+  ['qr-dot-style', 'qr-corner-square', 'qr-corner-dot'].forEach(function (id) {
+    $(id).querySelectorAll('.swatch').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        $(id).querySelectorAll('.swatch').forEach(function (b) { b.classList.remove('is-active'); });
+        btn.classList.add('is-active');
+        render();
+      });
+    });
+  });
+
+  function isTransparent() { return $('qr-transparent').checked; }
+  function bgColor() { return isTransparent() ? 'transparent' : $('qr-bg').value; }
+
+  // Options shared by the live preview and the (larger) export renders.
+  // Pixel-based values (margins) are scaled relative to the preview size.
+  function buildStyleOptions(size) {
+    var scale = size / currentSize();
+    return {
       width: size,
       height: size,
-      data: data || PLACEHOLDER,
-      margin: parseInt($('qr-margin').value, 10) || 0,
+      data: buildData() || PLACEHOLDER,
+      margin: Math.round((parseInt($('qr-margin').value, 10) || 0) * scale),
       qrOptions: { errorCorrectionLevel: $('qr-ecc').value },
-      dotsOptions: { color: $('qr-fg').value, type: $('qr-dot-style').value },
-      backgroundOptions: { color: $('qr-bg').value },
-      cornersSquareOptions: { color: $('qr-fg').value, type: $('qr-corner-square').value },
-      cornersDotOptions: { color: $('qr-fg').value, type: $('qr-corner-dot').value },
+      dotsOptions: { color: $('qr-fg').value, type: swatchVal('qr-dot-style') },
+      backgroundOptions: { color: bgColor() },
+      cornersSquareOptions: { color: $('qr-fg').value, type: swatchVal('qr-corner-square') },
+      cornersDotOptions: { color: $('qr-fg').value, type: swatchVal('qr-corner-dot') },
       image: state.logo || undefined,
       imageOptions: {
         hideBackgroundDots: $('qr-hide-bg-dots').checked,
         imageSize: (parseInt($('qr-logo-size').value, 10) || 40) / 100,
-        margin: 6,
+        margin: Math.round(6 * scale),
         crossOrigin: 'anonymous'
       }
     };
-    qr.update(opts);
+  }
+
+  function render() {
+    qr.update(buildStyleOptions(currentSize()));
     updateFrame();
   }
 
@@ -208,8 +230,10 @@
     var frame = $('qrp-frame');
     var cta = $('qrp-cta');
     frame.classList.toggle('has-frame', on);
+    frame.classList.toggle('is-transparent', isTransparent());
     frame.style.borderColor = $('qr-frame-color').value;
-    frame.style.background = $('qr-bg').value;
+    // Transparent mode: clear the inline color so the CSS checkerboard shows through.
+    frame.style.background = isTransparent() ? '' : $('qr-bg').value;
     cta.style.background = $('qr-frame-color').value;
     cta.textContent = $('qr-frame-text').value || 'SCAN ME';
   }
@@ -234,8 +258,13 @@
   });
 
   // Design controls
-  ['qr-dot-style', 'qr-corner-square', 'qr-corner-dot', 'qr-ecc', 'qr-hide-bg-dots']
+  ['qr-ecc', 'qr-hide-bg-dots']
     .forEach(function (id) { $(id).addEventListener('change', render); });
+
+  $('qr-transparent').addEventListener('change', function () {
+    $('qr-bg').disabled = this.checked;
+    render();
+  });
 
   function bindColor(id, hexId, extra) {
     var input = $(id), hex = $(hexId);
@@ -314,14 +343,39 @@
     });
   }
 
-  // Compose the QR (as a PNG blob) onto a canvas, optionally with the CTA frame.
-  async function downloadPng() {
+  // Export size: presets + custom input (independent of the preview size).
+  function exportSize() {
+    var sel = $('qr-export-size').value;
+    if (sel === 'custom') {
+      var v = parseInt($('qr-export-custom').value, 10) || 1920;
+      return Math.min(Math.max(v, 128), 8192);
+    }
+    return parseInt(sel, 10);
+  }
+  $('qr-export-size').addEventListener('change', function () {
+    $('qr-export-custom').hidden = this.value !== 'custom';
+  });
+
+  // Render the QR at the export size (fresh instance, same style options).
+  function exportRawData(ext) {
+    var temp = new QRCodeStyling(buildStyleOptions(exportSize()));
+    return temp.getRawData(ext).then(function (raw) {
+      var mime = ext === 'svg' ? 'image/svg+xml' : 'image/' + ext;
+      return (raw instanceof Blob) ? raw : new Blob([raw], { type: mime });
+    });
+  }
+
+  // Compose the QR (as a PNG blob) onto a canvas, optionally with the CTA frame,
+  // then encode to the requested raster format ('png' | 'jpeg' | 'webp').
+  async function downloadRaster(format) {
     try {
-      var raw = await qr.getRawData('png');
-      var blob = (raw instanceof Blob) ? raw : new Blob([raw], { type: 'image/png' });
-      var img = await loadImage(URL.createObjectURL(blob));
+      var blob = await exportRawData('png');
+      var objUrl = URL.createObjectURL(blob);
+      var img = await loadImage(objUrl);
+      URL.revokeObjectURL(objUrl);
 
       var frameOn = $('qr-frame-enable').checked;
+      var transparent = isTransparent() && format !== 'jpeg'; // JPEG has no alpha channel
       var border = frameOn ? Math.round(img.width * 0.06) : 0;
       var labelH = frameOn ? Math.round(img.width * 0.16) : 0;
 
@@ -331,16 +385,20 @@
       var ctx = canvas.getContext('2d');
 
       // Frame / background fill.
-      ctx.fillStyle = frameOn ? $('qr-frame-color').value : $('qr-bg').value;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      if (frameOn) {
+        ctx.fillStyle = $('qr-frame-color').value;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      }
       // QR background inside the border.
-      ctx.fillStyle = $('qr-bg').value;
-      ctx.fillRect(border, border, img.width, img.height);
+      if (transparent) {
+        ctx.clearRect(border, border, img.width, img.height);
+      } else {
+        ctx.fillStyle = isTransparent() ? '#ffffff' : $('qr-bg').value;
+        ctx.fillRect(border, border, img.width, img.height);
+      }
       ctx.drawImage(img, border, border, img.width, img.height);
 
       if (frameOn) {
-        ctx.fillStyle = $('qr-frame-color').value;
-        ctx.fillRect(0, img.height + border * 2, canvas.width, labelH);
         ctx.fillStyle = '#14141a';
         ctx.font = '700 ' + Math.round(labelH * 0.42) + 'px Poppins, Segoe UI, sans-serif';
         ctx.textAlign = 'center';
@@ -349,17 +407,28 @@
         ctx.fillText(text, canvas.width / 2, img.height + border * 2 + labelH / 2);
       }
 
-      canvas.toBlob(function (out) { triggerBlobDownload(out, 'qr-code.png'); }, 'image/png');
+      var ext = format === 'jpeg' ? 'jpg' : format;
+      canvas.toBlob(function (out) {
+        triggerBlobDownload(out, 'qr-code-' + exportSize() + '.' + ext);
+      }, 'image/' + format, 0.92);
     } catch (err) {
       console.error(err);
       // Fallback: let the library handle the download directly.
-      qr.download({ name: 'qr-code', extension: 'png' });
+      qr.download({ name: 'qr-code', extension: format });
     }
   }
 
-  $('qrp-dl-png').addEventListener('click', downloadPng);
-  $('qrp-dl-svg').addEventListener('click', function () {
-    qr.download({ name: 'qr-code', extension: 'svg' });
+  $('qrp-dl-png').addEventListener('click', function () { downloadRaster('png'); });
+  $('qrp-dl-jpg').addEventListener('click', function () { downloadRaster('jpeg'); });
+  $('qrp-dl-webp').addEventListener('click', function () { downloadRaster('webp'); });
+  $('qrp-dl-svg').addEventListener('click', async function () {
+    try {
+      var blob = await exportRawData('svg');
+      triggerBlobDownload(blob, 'qr-code-' + exportSize() + '.svg');
+    } catch (err) {
+      console.error(err);
+      qr.download({ name: 'qr-code', extension: 'svg' });
+    }
   });
 
   // ---- First paint -----------------------------------------------------------

@@ -245,6 +245,39 @@ body.qrp-body {
   cursor: pointer;
 }
 .color-row .hex { font-size: 1.3rem; color: var(--qr-text-muted); font-variant-numeric: tabular-nums; }
+.color-row input[type="color"]:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* ---- Style swatches (visual pickers for dot/corner styles) ---- */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.2rem, 1fr));
+  gap: 0.8rem;
+}
+.swatch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 0.6rem;
+  border: 1px solid var(--qr-stroke);
+  border-radius: 1.2rem;
+  background: var(--qr-surface-2);
+  color: var(--qr-text-muted);
+  font-family: inherit;
+  font-size: 1.15rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+.swatch svg { width: 2.4rem; height: 2.4rem; display: block; }
+.swatch:hover { border-color: var(--qr-accent); color: var(--qr-text); transform: translateY(-2px); }
+.swatch.is-active {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--qr-accent), var(--qr-secondary));
+  color: var(--qr-on-accent);
+  box-shadow: 0 0.6rem 1.6rem color-mix(in srgb, var(--qr-accent) 40%, transparent);
+}
 
 input[type="range"] {
   width: 100%;
@@ -300,6 +333,10 @@ input[type="range"] {
   box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.18);
 }
 .qr-frame.has-frame { border: 6px solid var(--qr-accent); }
+/* Transparent background: show a checkerboard behind the QR in the preview. */
+.qr-frame.is-transparent {
+  background: conic-gradient(#cfcfd8 0 25%, #ffffff 0 50%, #cfcfd8 0 75%, #ffffff 0) 0 0 / 1.6rem 1.6rem;
+}
 #qrp-canvas { line-height: 0; }
 #qrp-canvas canvas, #qrp-canvas svg { display: block; max-width: 100%; height: auto; border-radius: 0.4rem; }
 .qr-cta {
@@ -315,6 +352,11 @@ input[type="range"] {
   text-transform: uppercase;
 }
 .qr-frame.has-frame .qr-cta { display: block; }
+
+.dl-size { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.4rem; }
+.dl-size__row { display: flex; gap: 1rem; }
+.dl-size__row .select { flex: 1; min-width: 0; }
+.dl-size__row .input { width: 11rem; flex: none; }
 
 .downloads { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
 .btn {
@@ -353,5 +395,4 @@ input[type="range"] {
 @media (max-width: 480px) {
   .qrp { padding: 1.6rem; }
   .field.row2 { grid-template-columns: 1fr; }
-  .downloads { grid-template-columns: 1fr; }
 }

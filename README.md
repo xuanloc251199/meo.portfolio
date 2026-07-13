@@ -46,8 +46,8 @@ Hoặc chạy qua Laragon: truy cập `http://meo.portfolio.test` (file `.htacce
 - URL: `/qr` — **không** được liên kết ở đâu trong portfolio, chỉ truy cập qua link trực tiếp (có `meta robots noindex`).
 - Tạo mã QR hoàn toàn phía client (thư viện `public/js/vendor/qr-code-styling.js`), không gửi dữ liệu về server.
 - Hỗ trợ: URL, Văn bản, Email, Điện thoại, SMS, WhatsApp, WiFi, Danh thiếp (vCard), Vị trí, Sự kiện.
-- Tùy chỉnh: màu mã/nền, kiểu chấm & góc, mức sửa lỗi, kích thước, lề, logo ở giữa, khung + chữ CTA.
-- Tải về: PNG (kèm khung nếu bật) và SVG.
+- Tùy chỉnh: màu mã/nền (có **nền trong suốt**), kiểu chấm & góc (chọn bằng nút minh họa trực quan), mức sửa lỗi, cỡ xem trước, lề, logo ở giữa, khung + chữ CTA.
+- Tải về: **PNG / JPG / WEBP / SVG**, chọn kích thước xuất (512–4096px hoặc tùy chỉnh, mặc định 1920×1920). Khung CTA ghép vào các định dạng ảnh; JPG không có kênh alpha nên nền trong suốt tự chuyển thành trắng.
 - Giao diện dùng chung design tokens + dark/light theming với portfolio (`public/css/qr.css` + Phosphor icons từ `plugins.css`).
 
 ## Cấu hình mail

@@ -4,6 +4,54 @@ Lịch sử các phiên làm việc với dự án.
 
 ---
 
+## [2026-07-13] — Cải tiến trình tạo mã QR (minh họa kiểu, nền trong suốt, nhiều định dạng, size xuất)
+
+### Mục tiêu
+Nâng cấp trang `/qr`: chọn kiểu chấm/góc bằng minh họa trực quan thay dropdown, hỗ trợ nền trong suốt, thêm định dạng tải (JPG/WEBP), và chọn kích thước file xuất riêng (mặc định 1920×1920px).
+
+### Changelog chi tiết theo task
+
+#### Task 1: Minh họa trực quan cho các kiểu (swatch picker)
+- **Mô tả:** thay 3 dropdown (kiểu chấm / góc ngoài / góc trong) bằng lưới nút swatch, mỗi nút có SVG minh họa đúng hình dạng kiểu đó + nhãn.
+- **Thay đổi:**
+  - `resources/views/qr/index.blade.php` — block `@php` khai báo mảng shape SVG cho 6 kiểu chấm (tile 3×3), 3 kiểu góc ngoài (vòng stroke), 2 kiểu góc trong (fill); render bằng `@foreach`. SVG dùng `currentColor` nên tự theo theme.
+  - `public/css/qr.css` — class `.swatches` (grid auto-fill) + `.swatch` (active dùng gradient accent như `.type-btn`).
+  - `public/js/qr.js` — hàm `swatchVal(id)` đọc `data-value` của nút `.is-active`; wiring click cho 3 nhóm; bỏ 3 select cũ khỏi danh sách listener.
+
+#### Task 2: Nền trong suốt
+- **Thay đổi:**
+  - Blade — checkbox `#qr-transparent` dưới ô màu nền.
+  - `qr.js` — `isTransparent()`/`bgColor()` trả `'transparent'` cho `backgroundOptions`; khóa color picker nền khi bật; `updateFrame()` toggle class `is-transparent` và xóa inline background để CSS caro hiện ra.
+  - `qr.css` — `.qr-frame.is-transparent` nền caro `conic-gradient`; style disabled cho input color.
+- **Ghi chú:** PNG/WEBP/SVG giữ alpha; JPG không có kênh alpha → composite lên nền trắng (đã ghi chú ở hint trên trang).
+
+#### Task 3: Nhiều định dạng tải + chọn size xuất (mặc định 1920×1920)
+- **Mô tả:** tách "cỡ xem trước" (slider cũ, đổi nhãn) khỏi "kích thước tải về"; export render lại bằng instance `QRCodeStyling` tạm ở size đích.
+- **Thay đổi:**
+  - Blade — select `#qr-export-size` (512/1024/**1920 mặc định**/2048/4096/Tùy chỉnh…) + input number `#qr-export-custom` (128–8192, hiện khi chọn Tùy chỉnh); 4 nút tải PNG/JPG/WEBP/SVG.
+  - `qr.js` — refactor `render()` dùng chung `buildStyleOptions(size)` (margin + logo margin scale theo tỉ lệ size/preview); `exportRawData(ext)` tạo instance tạm; `downloadRaster(format)` thay `downloadPng()` — composite khung CTA trên canvas rồi `toBlob('image/'+format, 0.92)`, xử lý transparent (clearRect vùng QR khi khung bật; JPG fill trắng); SVG tải qua `getRawData('svg')` ở size xuất. Tên file kèm size: `qr-code-1920.png`.
+  - `qr.css` — `.dl-size` row; bỏ rule mobile ép downloads về 1 cột (giữ 2×2).
+- **Ghi chú:** thư viện vendor hỗ trợ sẵn `getRawData('png'|'jpeg'|'webp'|'svg')` (canvas `toBlob('image/'+ext)`), không cần nâng cấp vendor.
+
+#### Task 4: Kiểm thử trên browser (php artisan serve, port 8123)
+- Đủ 11 swatch render, click đổi kiểu hoạt động, không lỗi console.
+- Bật nền trong suốt: color picker khóa, preview hiện caro, pixel canvas alpha = 0.
+- Hook `HTMLAnchorElement.click` + `URL.createObjectURL` để bắt blob tải về: PNG 1920×1920 đúng size/tên; WEBP giữ alpha (pixel góc `[0,0,0,0]`); JPG nền trắng (`[255,255,255,255]`); SVG có `width="1920"` + nền `transparent`.
+- Khung CTA + size tùy chỉnh 999: canvas xuất 1119×1279 (999 + viền 6%×2 + label 16%), viền đúng màu khung, lòng QR vẫn trong suốt.
+
+### Vấn đề còn tồn đọng
+- Screenshot của Browser pane bị timeout trong phiên này (trang vẫn phản hồi JS bình thường) — chưa có ảnh chụp giao diện; các kiểm thử đều bằng DOM/pixel.
+- SVG vẫn không kèm khung CTA (giới hạn có chủ đích từ phiên trước).
+- `canvas.toBlob('image/webp')` trên Safari cũ sẽ fallback về PNG (tên file vẫn `.webp`).
+- Chưa commit.
+
+### File liên quan
+- `resources/views/qr/index.blade.php`
+- `public/js/qr.js`, `public/css/qr.css`
+- `README.md` (mục "Trình tạo mã QR")
+
+---
+
 ## [2026-07-09] — Trình tạo mã QR standalone (trang ẩn)
 
 ### Mục tiêu
